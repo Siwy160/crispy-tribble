@@ -7,9 +7,7 @@ import com.gwiazdowski.empikweather.ui.weather.WeatherFragment
 import com.gwiazdowski.network.INetworkService
 import com.gwiazdowski.services.navigation.INavigationService
 import com.gwiazdowski.services.navigation.NavigationTarget
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 
 
 class HomeViewModel(
@@ -24,23 +22,12 @@ class HomeViewModel(
     }
 
     fun citySearchQuerySubmit(newQuery: String) {
-        weahterDisposable?.dispose()
-        weahterDisposable = networkService.getWeather(newQuery)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                    navigationService.navigateTo(
-                        NavigationTarget(
-                            WeatherFragment::class,
-                            WeatherArguments(it)
-                        )
-                    )
-                },
-                {
-                    Log.e(TAG, "citySearchQuerySubmit: error while fetching weather", it)
-                }
+        navigationService.navigateTo(
+            NavigationTarget(
+                WeatherFragment::class,
+                WeatherArguments(newQuery)
             )
+        )
     }
 
     override fun onCleared() {

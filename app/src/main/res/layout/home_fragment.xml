@@ -22,6 +22,7 @@
             android:layout_margin="16dp"
             android:drawableEnd="@drawable/ic_search"
             android:hint="Enter city name"
+            android:text="Szczecin"
             android:imeOptions="actionSearch"
             android:singleLine="true"
             app:layout_constraintEnd_toEndOf="parent"

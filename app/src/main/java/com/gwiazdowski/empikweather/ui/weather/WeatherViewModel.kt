@@ -1,15 +1,40 @@
 package com.gwiazdowski.empikweather.ui.weather
 
-import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.gwiazdowski.empikweather.ui.NavigationAwareViewModel
+import com.gwiazdowski.model.weather.Forecast
+import com.gwiazdowski.network.INetworkService
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
-class WeatherViewModel : NavigationAwareViewModel<WeatherArguments>() {
+class WeatherViewModel(
+    val networkService: INetworkService
+) : NavigationAwareViewModel<WeatherArguments>() {
+
+    private var forecastDisposable: Disposable? = null
+    val forecast: MutableLiveData<Forecast> = MutableLiveData()
+    val isLoadingVisible: MutableLiveData<Boolean> = MutableLiveData(false)
 
     override fun onArgumentsReceived(args: WeatherArguments) {
-        Log.d(TAG, "onArgumentsReceived() called with: args = $args")
+        isLoadingVisible.value = true
+        forecastDisposable = networkService.getForecast(args.cityName)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    forecast.value = it
+                    isLoadingVisible.value = false
+                }, {
+                    // TODO error handling
+                    it.printStackTrace()
+                    isLoadingVisible.postValue(false)
+                }
+            )
     }
 
-    companion object {
-        private const val TAG = "WeatherViewModel"
+    override fun onCleared() {
+        forecastDisposable?.dispose()
+        forecastDisposable = null
     }
 }

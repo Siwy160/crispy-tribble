@@ -5,6 +5,6 @@ import org.koin.dsl.module
 
 val weatherModule = module {
     scope<WeatherFragment> {
-        viewModel { WeatherViewModel() }
+        viewModel { WeatherViewModel(get()) }
     }
 }

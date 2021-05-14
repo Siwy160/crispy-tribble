@@ -1,10 +1,14 @@
 package com.gwiazdowski.network.conventers
 
-import com.gwiazdowski.model.weather.Weather
+import com.gwiazdowski.model.weather.CurrentWeather
 import com.gwiazdowski.network.dto.WeatherResponseDto
+import java.util.*
 
-fun WeatherResponseDto.toWeather() =
-    Weather(
-        id = id,
-        name = name,
+internal fun WeatherResponseDto.toWeather() =
+    CurrentWeather(
+        cityName = name,
+        time = Date(System.currentTimeMillis()),
+        temperatureKelvin = main.temp,
+        weatherName = weather.firstOrNull()?.main ?: "?",
+        weatherIcon = weather.firstOrNull()?.icon ?: ""
     )

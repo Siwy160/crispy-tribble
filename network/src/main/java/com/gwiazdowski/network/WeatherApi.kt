@@ -1,9 +1,12 @@
 package com.gwiazdowski.network
 
+import com.gwiazdowski.network.dto.ForecastResponseDto
 import com.gwiazdowski.network.dto.WeatherResponseDto
 import io.reactivex.Single
 
-interface WeatherApi {
+internal interface WeatherApi {
 
-    fun getWeather(cityName: String, apiKey: String): Single<WeatherResponseDto>
+    fun getWeather(cityName: String, apiKey: String, languageCode: String): Single<WeatherResponseDto>
+
+    fun getForecast(cityName: String, apiKey: String, languageCode: String) : Single<ForecastResponseDto>
 }

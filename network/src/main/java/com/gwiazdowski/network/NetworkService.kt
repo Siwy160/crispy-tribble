@@ -1,17 +1,27 @@
 package com.gwiazdowski.network
 
-import com.gwiazdowski.model.weather.Weather
+import com.gwiazdowski.model.weather.CurrentWeather
+import com.gwiazdowski.model.weather.Forecast
+import com.gwiazdowski.network.conventers.toForecast
 import com.gwiazdowski.network.conventers.toWeather
 import com.gwiazdowski.network.retrofit.RetrofitFactory
 import io.reactivex.Single
 
 internal class NetworkService(
     private val weatherApiKey: String,
+    private val weatherLanguageCode: String,
     private val retrofitFactory: RetrofitFactory
 ) : INetworkService {
 
-    override fun getWeather(cityName: String): Single<Weather> {
-        return retrofitFactory.weatherApi.getWeather(cityName, weatherApiKey)
-            .map { it.toWeather() }
-    }
+    override fun getCurrentWeather(cityName: String): Single<CurrentWeather> =
+        retrofitFactory.weatherApi.getWeather(cityName, weatherApiKey, weatherLanguageCode)
+            .map {
+                it.toWeather()
+            }
+
+    override fun getForecast(cityName: String): Single<Forecast> =
+        retrofitFactory.weatherApi.getForecast(cityName, weatherApiKey, weatherLanguageCode)
+            .map {
+                it.toForecast()
+            }
 }

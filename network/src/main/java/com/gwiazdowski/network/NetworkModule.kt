@@ -5,12 +5,13 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val networkModule = module {
-    single { RetrofitFactory(get(named("weatherBaseUrl"))) }
+    single { RetrofitFactory(get(named(WEATHER_BASE_URL))) }
 
     single<INetworkService> {
         NetworkService(
-            get(named("weatherApiKey")),
-            get()
+            weatherApiKey = get(named(WEATHER_API_KEY)),
+            weatherLanguageCode = get(named(WEATHER_LANGUAGE_CODE)),
+            retrofitFactory = get(),
         )
     }
 }

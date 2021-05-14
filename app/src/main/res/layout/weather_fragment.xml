@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -11,6 +13,80 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/city_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="64dp"
+            android:layout_marginTop="16dp"
+            android:text="@{viewModel.forecast.cityName}"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toStartOf="@id/button_favorite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Szczecin" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            app:currentTime="@{viewModel.forecast.forecast.get(0).time}"
+            app:layout_constraintEnd_toEndOf="@id/city_name"
+            app:layout_constraintStart_toStartOf="@id/city_name"
+            app:layout_constraintTop_toBottomOf="@id/city_name"
+            tools:text="Mon, 1:40 am" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/button_favorite"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="8dp"
+            android:background="@null"
+            android:src="@drawable/ic_bookmark_add"
+            app:layout_constraintBottom_toBottomOf="@id/city_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/city_name" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/condition_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:layout_constraintBottom_toBottomOf="@id/condition_name"
+            app:layout_constraintStart_toStartOf="@id/current_temperature"
+            app:layout_constraintTop_toTopOf="@id/condition_name"
+            app:weatherIcon="@{viewModel.forecast.weatherIcon}" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/condition_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:text="@{viewModel.forecast.weatherName}"
+            android:textSize="32sp"
+            app:layout_constraintBottom_toTopOf="@id/current_temperature"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/condition_icon"
+            tools:text="Clear" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/current_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="128sp"
+            android:layout_marginStart="32dp"
+            android:fontFamily="@font/roboto_light"
+            android:includeFontPadding="false"
+            android:textSize="128sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:temperature="@{viewModel.forecast.temperatureKelvin}"
+            tools:text="25°" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

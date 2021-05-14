@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">EmpikWeather</string>
+    <string name="weather_api_language_code">en</string>
+
 </resources>
