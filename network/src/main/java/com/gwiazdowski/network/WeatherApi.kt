@@ -8,5 +8,5 @@ internal interface WeatherApi {
 
     fun getWeather(cityName: String, apiKey: String, languageCode: String): Single<WeatherResponseDto>
 
-    fun getForecast(cityName: String, apiKey: String, languageCode: String) : Single<ForecastResponseDto>
+    fun getForecast(lat: Double, lan: Double, apiKey: String, languageCode: String): Single<ForecastResponseDto>
 }

@@ -12,6 +12,6 @@ internal class RetrofitWeatherApi(retrofit: Retrofit) : WeatherApi {
     override fun getWeather(cityName: String, apiKey: String, languageCode: String): Single<WeatherResponseDto> =
         weatherApiService.getWeather(cityName, apiKey, languageCode)
 
-    override fun getForecast(cityName: String, apiKey: String, languageCode: String): Single<ForecastResponseDto> =
-        weatherApiService.getForecast(cityName, apiKey, languageCode)
+    override fun getForecast(lat: Double, lan: Double, apiKey: String, languageCode: String): Single<ForecastResponseDto> =
+        weatherApiService.getForecast(lat, lan, apiKey, languageCode)
 }
