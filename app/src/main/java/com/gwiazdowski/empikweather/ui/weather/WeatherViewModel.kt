@@ -10,7 +10,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class WeatherViewModel(
-    val networkService: INetworkService
+    private val networkService: INetworkService
 ) : NavigationAwareViewModel<WeatherArguments>() {
 
     private var forecastDisposable: Disposable? = null
@@ -20,7 +20,7 @@ class WeatherViewModel(
 
     override fun onArgumentsReceived(args: WeatherArguments) {
         isLoadingVisible.value = true
-        forecastDisposable = networkService.getForecast(args.city.lat, args.city.lan)
+        forecastDisposable = networkService.getForecast(args.city.lat, args.city.lon)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

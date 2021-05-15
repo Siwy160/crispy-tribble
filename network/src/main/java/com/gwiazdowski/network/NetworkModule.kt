@@ -10,7 +10,7 @@ val networkModule = module {
     single<INetworkService> {
         NetworkService(
             weatherApiKey = get(named(WEATHER_API_KEY)),
-            weatherLanguageCode = get(named(WEATHER_LANGUAGE_CODE)),
+            languageCode = get(named(LANGUAGE_CODE)),
             retrofitFactory = get(),
         )
     }

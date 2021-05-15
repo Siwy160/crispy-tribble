@@ -1,6 +1,7 @@
 package com.gwiazdowski.network.retrofit.weather
 
 import com.gwiazdowski.network.WeatherApi
+import com.gwiazdowski.network.dto.CitiesByNameResponseDto
 import com.gwiazdowski.network.dto.ForecastResponseDto
 import com.gwiazdowski.network.dto.WeatherResponseDto
 import io.reactivex.Single
@@ -14,4 +15,7 @@ internal class RetrofitWeatherApi(retrofit: Retrofit) : WeatherApi {
 
     override fun getForecast(lat: Double, lan: Double, apiKey: String, languageCode: String): Single<ForecastResponseDto> =
         weatherApiService.getForecast(lat, lan, apiKey, languageCode)
+
+    override fun getCitiesByName(name: String, apiKey: String, limit: Int): Single<List<CitiesByNameResponseDto>> =
+        weatherApiService.getCitiesByName(name, apiKey, limit)
 }
