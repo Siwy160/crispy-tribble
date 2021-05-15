@@ -19,7 +19,7 @@ internal interface WeatherApiService {
     @GET("data/2.5/onecall")
     fun getForecast(
         @Query("lat") lat: Double,
-        @Query("lan") lan: Double,
+        @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
         @Query("lang") languageCode: String
     ): Single<ForecastResponseDto>

@@ -8,13 +8,13 @@ import java.util.*
 internal fun ForecastResponseDto.toForecast() = Forecast(
     time = Date(System.currentTimeMillis()),
     temperatureKelvin = current.temp,
-    weatherName = current.weather.main,
-    weatherIcon = current.weather.icon,
+    weatherName = current.weather.firstOrNull()?.main ?: "",
+    weatherIcon = current.weather.firstOrNull()?.icon ?: "",
     forecast = hourly.map {
         WeatherItem(
             time = Date(it.dt),
             temperatureKelvin = it.temp,
-            weatherIcon = it.weather.icon
+            weatherIcon = it.weather.firstOrNull()?.icon ?: ""
         )
     }
 )

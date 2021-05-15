@@ -21,9 +21,9 @@ internal data class WeatherItem(
     val uvi: Float,
     val clouds: Int,
     val visibility: Int,
-    val wind_speed: Int,
+    val wind_speed: Float,
     val wind_deg: Int,
-    val weather: Weather,
+    val weather: Array<Weather>,
     val rain: Rain,
 )
 

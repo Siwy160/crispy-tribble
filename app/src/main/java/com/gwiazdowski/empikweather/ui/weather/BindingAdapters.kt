@@ -21,7 +21,8 @@ fun AppCompatImageView.loadIcon(weatherIcon: String?) {
 
 @BindingAdapter("temperature")
 fun AppCompatTextView.setTemperature(temperatureKelvin: Float?) {
-    text = temperatureKelvin?.let { "${(temperatureKelvin - 273.15f).roundToInt()}°" } ?: ""
+    if (temperatureKelvin == null || temperatureKelvin == 0f) return
+    text = "${(temperatureKelvin - 273.15f).roundToInt()}°"
 }
 
 @BindingAdapter("currentTime")

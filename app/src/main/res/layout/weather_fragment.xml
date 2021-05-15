@@ -88,6 +88,31 @@
             app:temperature="@{viewModel.forecast.temperatureKelvin}"
             tools:text="25°" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/black_alpha_50"
+            android:clickable="true"
+            android:elevation="@dimen/search_focused_elevation"
+            android:visibility="gone"
+            app:fadeVisible="@{viewModel.loadingVisible}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:elevation="@dimen/search_focused_elevation"
+            android:visibility="gone"
+            app:fadeVisible="@{viewModel.loadingVisible}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

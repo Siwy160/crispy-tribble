@@ -9,7 +9,7 @@ interface INetworkService {
 
     fun getCurrentWeather(cityName: String): Single<CurrentWeather>
 
-    fun getForecast(lat: Double, lan: Double): Single<Forecast>
+    fun getForecast(lat: Double, lon: Double): Single<Forecast>
 
     fun getCityByName(name: String): Single<List<City>>
 

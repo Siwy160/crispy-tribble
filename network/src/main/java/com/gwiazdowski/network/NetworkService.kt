@@ -22,8 +22,8 @@ internal class NetworkService(
                 it.toWeather()
             }
 
-    override fun getForecast(lat: Double, lan: Double): Single<Forecast> =
-        retrofitFactory.weatherApi.getForecast(lat, lan, weatherApiKey, languageCode)
+    override fun getForecast(lat: Double, lon: Double): Single<Forecast> =
+        retrofitFactory.weatherApi.getForecast(lat, lon, weatherApiKey, languageCode)
             .map {
                 it.toForecast()
             }
