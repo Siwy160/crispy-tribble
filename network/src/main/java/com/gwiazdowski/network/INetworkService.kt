@@ -11,5 +11,7 @@ interface INetworkService {
 
     fun getForecast(lat: Double, lan: Double): Single<Forecast>
 
-    fun getCityByName(name: String) : Single<List<City>>
+    fun getCityByName(name: String): Single<List<City>>
+
+    fun getCityNameAutocomplete(query: String): Single<List<String>>
 }

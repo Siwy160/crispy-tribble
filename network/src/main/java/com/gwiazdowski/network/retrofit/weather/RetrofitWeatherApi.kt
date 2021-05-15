@@ -1,6 +1,5 @@
 package com.gwiazdowski.network.retrofit.weather
 
-import com.gwiazdowski.network.WeatherApi
 import com.gwiazdowski.network.dto.CitiesByNameResponseDto
 import com.gwiazdowski.network.dto.ForecastResponseDto
 import com.gwiazdowski.network.dto.WeatherResponseDto

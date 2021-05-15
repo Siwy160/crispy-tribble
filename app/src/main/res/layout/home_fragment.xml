@@ -12,13 +12,17 @@
         <variable
             name="suggestionsAdapter"
             type="com.gwiazdowski.empikweather.ui.home.search.SearchSuggestionsAdapter" />
+
+        <variable
+            name="searchFocusChangeListener"
+            type="android.view.View.OnFocusChangeListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/secondaryColor"
+        android:background="@color/primaryLightColor"
         tools:context=".ui.home.HomeFragment">
 
         <View
@@ -27,6 +31,7 @@
             android:layout_height="40dp"
             android:layout_margin="16dp"
             android:background="@drawable/home_search_background"
+            android:elevation="@{viewModel.currentSearchFocus == true ? @dimen/search_focused_elevation : @dimen/search_no_focus_elevation}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -35,10 +40,12 @@
             android:id="@+id/search_start_drawable"
             android:layout_width="38dp"
             android:layout_height="32dp"
+            android:elevation="@{viewModel.currentSearchFocus == true ? @dimen/search_focused_elevation : @dimen/search_no_focus_elevation}"
+            android:onClick="@{() -> viewModel.backClicked()}"
             android:padding="4dp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:src="@{viewModel.currentQuery.length() == 0 ? @drawable/ic_search : @drawable/ic_back}"
+            android:src="@{viewModel.currentSearchFocus == false ? @drawable/ic_search : @drawable/ic_back}"
             app:layout_constraintBottom_toBottomOf="@id/search_field_bg"
             app:layout_constraintStart_toStartOf="@id/search_field_bg"
             app:layout_constraintTop_toTopOf="@id/search_field_bg" />
@@ -48,21 +55,27 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@null"
+            android:elevation="@{viewModel.currentSearchFocus == true ? @dimen/search_focused_elevation : @dimen/search_no_focus_elevation}"
             android:hint="@string/enter_city_name"
             android:imeOptions="actionSearch"
             android:singleLine="true"
             android:text="@{viewModel.currentQuery}"
+            app:errorText="@{@string/search_error}"
+            app:errorVisible="@{viewModel.searchErrorVisible}"
             app:layout_constraintBottom_toBottomOf="@id/search_field_bg"
-            app:layout_constraintEnd_toEndOf="@id/search_end_drawable"
+            app:layout_constraintEnd_toStartOf="@id/search_end_drawable"
             app:layout_constraintStart_toEndOf="@id/search_start_drawable"
             app:layout_constraintTop_toTopOf="@id/search_field_bg"
+            app:onFocusChange="@{searchFocusChangeListener}"
             app:onTextChanged="@{viewModel::citySearchQueryChanged}"
-            app:onTextSubmit="@{viewModel::citySearchQuerySubmit}" />
+            app:onTextSubmit="@{viewModel::citySearchQuerySubmit}"
+            app:setFocus="@{viewModel.searchClearFocusRequests}" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/search_end_drawable"
             android:layout_width="38dp"
             android:layout_height="32dp"
+            android:elevation="@{viewModel.currentSearchFocus == true ? @dimen/search_focused_elevation : @dimen/search_no_focus_elevation}"
             android:onClick="@{() -> viewModel.clearClicked()}"
             android:padding="4dp"
             android:paddingStart="8dp"
@@ -78,16 +91,42 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/search_suggestions"
             android:layout_width="0dp"
-            android:layout_height="128dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/home_search_background"
+            android:elevation="@dimen/search_focused_elevation"
             android:visibility="gone"
             app:fadeVisible="@{viewModel.searchSuggestions.size() != 0}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_field"
             tools:visibility="visible" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/black_alpha_50"
+            android:clickable="true"
+            android:elevation="@dimen/search_focused_elevation"
+            android:visibility="gone"
+            app:fadeVisible="@{viewModel.loadingVisible}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:elevation="@dimen/search_focused_elevation"
+            android:visibility="gone"
+            app:fadeVisible="@{viewModel.loadingVisible}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

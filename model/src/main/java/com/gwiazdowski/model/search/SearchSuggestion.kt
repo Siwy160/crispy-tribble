@@ -1,6 +1,6 @@
 package com.gwiazdowski.model.search
 
 data class SearchSuggestion(
-    val city: City,
+    val city: String,
     val origin: SearchSuggestionOrigin
 )

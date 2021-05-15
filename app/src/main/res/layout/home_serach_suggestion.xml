@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="com.gwiazdowski.model.search.SearchSuggestionOrigin" />
+
         <variable
             name="suggestion"
             type="com.gwiazdowski.model.search.SearchSuggestion" />
@@ -13,14 +15,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/search_start_drawable"
+            android:layout_width="38dp"
+            android:layout_height="32dp"
+            android:padding="4dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:src="@{suggestion.origin == SearchSuggestionOrigin.NETWORK ? @drawable/ic_search : @drawable/ic_history}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@{suggestion.city.name}"
+            android:text="@{suggestion.city}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/search_start_drawable"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Szczecin" />
 

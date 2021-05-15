@@ -1,23 +1,37 @@
 package com.gwiazdowski.network.retrofit
 
-import com.gwiazdowski.network.WeatherApi
+import android.content.Context
+import com.gwiazdowski.network.retrofit.maps.MapsApi
+import com.gwiazdowski.network.retrofit.maps.RetrofitMapsApi
 import com.gwiazdowski.network.retrofit.weather.RetrofitWeatherApi
+import com.gwiazdowski.network.retrofit.weather.WeatherApi
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.io.File
 
 internal class RetrofitFactory(
-    weatherApiBaseUrl: String
+    context: Context,
+    weatherApiBaseUrl: String,
+    mapsBaseUrl: String
 ) {
 
     val weatherApi: WeatherApi
+    val mapsApi: MapsApi
 
     init {
         weatherApi = RetrofitWeatherApi(
             createRetrofit(
                 weatherApiBaseUrl,
-                createDefaultOkHttp()
+                createDefaultOkHttp(context, false)
+            )
+        )
+        mapsApi = RetrofitMapsApi(
+            createRetrofit(
+                mapsBaseUrl,
+                createDefaultOkHttp(context, true)
             )
         )
     }
@@ -32,8 +46,16 @@ internal class RetrofitFactory(
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
 
-    private fun createDefaultOkHttp(): OkHttpClient {
+    private fun createDefaultOkHttp(context: Context, withCache: Boolean): OkHttpClient {
+        val httpCacheDirectory = File(context.cacheDir, "http-cache")
+        val cacheSize = 10L * 1024 * 1024 // 10 MiB
+        val cache = Cache(httpCacheDirectory, cacheSize)
         return OkHttpClient.Builder()
+            .also {
+                if (withCache) {
+                    it.cache(cache)
+                }
+            }
             .build()
     }
 

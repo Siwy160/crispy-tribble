@@ -11,6 +11,7 @@ import io.reactivex.Single
 
 internal class NetworkService(
     private val weatherApiKey: String,
+    private val mapsApiKey: String,
     private val languageCode: String,
     private val retrofitFactory: RetrofitFactory
 ) : INetworkService {
@@ -32,4 +33,7 @@ internal class NetworkService(
             .map {
                 it.toCities(languageCode)
             }
+
+    override fun getCityNameAutocomplete(query: String): Single<List<String>> =
+        retrofitFactory.mapsApi.getCitiesAutocomplete(query, mapsApiKey, languageCode)
 }

@@ -8,6 +8,7 @@ import androidx.databinding.BindingAdapter
 
 @BindingAdapter("fadeVisible")
 fun View.setFadeVisible(visible: Boolean) {
+    val durationMs = 200L
     val targetVisibility = if (visible) View.VISIBLE else View.GONE
     if (visibility == targetVisibility) {
         return
@@ -20,13 +21,13 @@ fun View.setFadeVisible(visible: Boolean) {
         if (visible) {
             visibility = View.VISIBLE
             alpha = 0f
-            animate().alpha(1f).setListener(object : AnimatorListenerAdapter() {
+            animate().alpha(1f).setDuration(durationMs).setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     alpha = 1f
                 }
             })
         } else {
-            animate().alpha(0f).setListener(object : AnimatorListenerAdapter() {
+            animate().alpha(0f).setDuration(durationMs).setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     alpha = 1f
                     visibility = View.GONE

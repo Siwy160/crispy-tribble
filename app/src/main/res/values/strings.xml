@@ -3,5 +3,6 @@
     <string name="app_name">EmpikWeather</string>
 
     <string name="enter_city_name">Enter city name</string>
+    <string name="search_error">Enter valid city name</string>
 
 </resources>
