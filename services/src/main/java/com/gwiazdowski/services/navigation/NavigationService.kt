@@ -17,11 +17,17 @@ internal class NavigationService(
         fragmentManager!!
             .beginTransaction()
             .replace(containerId, targetFragment)
+            .addToBackStack(null)
             .commit()
     }
 
-    override fun goBack() {
-        fragmentManager!!
-            .popBackStack()
+    override fun handleBackPressed() = goBack()
+
+    private fun goBack(): Boolean {
+        if (fragmentManager!!.backStackEntryCount == 0) {
+            return false
+        }
+        fragmentManager!!.popBackStack()
+        return true
     }
 }

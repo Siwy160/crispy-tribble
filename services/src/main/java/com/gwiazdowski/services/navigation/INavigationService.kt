@@ -4,5 +4,8 @@ interface INavigationService {
 
     fun navigateTo(target: NavigationTarget)
 
-    fun goBack()
+    /**
+     * @return true if operation was handled
+     */
+    fun handleBackPressed(): Boolean
 }

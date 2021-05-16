@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EmpikWeather"
         tools:targetApi="n">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.mainactivity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -3,6 +3,7 @@ package com.gwiazdowski.empikweather
 import android.app.Application
 import com.gwiazdowski.empikweather.koin.appModule
 import com.gwiazdowski.empikweather.ui.home.homeModule
+import com.gwiazdowski.empikweather.ui.mainactivity.mainActivityModule
 import com.gwiazdowski.empikweather.ui.weather.weatherModule
 import com.gwiazdowski.network.networkModule
 import com.gwiazdowski.services.microservicesModule
@@ -24,6 +25,7 @@ class WeatherApp : Application() {
             modules(
                 listOf(
                     appModule,
+                    mainActivityModule,
                     networkModule,
                     microservicesModule(R.id.container),
                     homeModule,
