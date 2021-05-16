@@ -11,16 +11,16 @@ import com.gwiazdowski.model.search.SearchSuggestionOrigin
 import com.gwiazdowski.network.INetworkService
 import com.gwiazdowski.services.navigation.INavigationService
 import com.gwiazdowski.services.navigation.NavigationTarget
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.gwiazdowski.services.schedulers.IRxSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
 
 class HomeViewModel(
     private val networkService: INetworkService,
-    private val navigationService: INavigationService
+    private val navigationService: INavigationService,
+    private val schedulers: IRxSchedulers
 ) : NavigationAwareViewModel<HomeArguments>() {
 
     val searchSuggestions: MutableLiveData<List<SearchSuggestion>> = MutableLiveData(emptyList())
@@ -38,14 +38,12 @@ class HomeViewModel(
             querySubject
                 .map { it.trim() }
                 .doOnNext {
-                    currentQuery.value = it
                     if (it.isBlank()) {
                         searchSuggestions.postValue(emptyList())
                     }
-                    searchErrorVisible.postValue(searchQueryValidator.matches(it).not())
                 }
-                .filter { it.isNotBlank() && searchQueryValidator.matches(it) }
-                .debounce(500, TimeUnit.MILLISECONDS)
+                .filter { validateQuery(it) }
+                .debounce(250, TimeUnit.MILLISECONDS, schedulers.io())
                 .flatMap {
                     networkService
                         .getCityNameAutocomplete(it)
@@ -56,8 +54,8 @@ class HomeViewModel(
                 .map {
                     it.map { SearchSuggestion(it, SearchSuggestionOrigin.NETWORK) }
                 }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulers.io())
+                .observeOn(schedulers.main())
                 .subscribe({
                     searchSuggestions.value = it
                 }, {
@@ -89,15 +87,17 @@ class HomeViewModel(
     }
 
     fun citySearchQuerySubmit(newQuery: String) {
-        navigateToWeatherScreen(newQuery)
+        if (validateQuery(newQuery)) {
+            navigateToWeatherScreen(newQuery)
+        }
     }
 
     private fun navigateToWeatherScreen(cityName: String) {
         loadingVisible.postValue(true)
         disposables.add(
             networkService.getCityByName(cityName)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulers.io())
+                .observeOn(schedulers.main())
                 .subscribe(
                     {
                         loadingVisible.postValue(false)
@@ -105,6 +105,7 @@ class HomeViewModel(
                             searchErrorVisible.postValue(true)
                         } else {
                             // TODO taking first city probably isn't best idea.
+                            searchSuggestions.postValue(emptyList())
                             navigationService.navigateTo(
                                 NavigationTarget(
                                     WeatherFragment::class,
@@ -120,6 +121,14 @@ class HomeViewModel(
                 )
         )
 
+    }
+
+    private fun validateQuery(query: String): Boolean {
+        val isValid = query.isNotBlank() && searchQueryValidator.matches(query)
+        if (isValid.not()) {
+            searchErrorVisible.postValue(true)
+        }
+        return isValid
     }
 
     override fun onCleared() {

@@ -29,7 +29,7 @@ interface TextSubmitListener {
 }
 
 @BindingAdapter("setFocus")
-fun View.setFocus(hasFocus: Boolean) {
+fun AppCompatEditText.setFocus(hasFocus: Boolean) {
     if (hasFocus) {
         requestFocus()
     } else {

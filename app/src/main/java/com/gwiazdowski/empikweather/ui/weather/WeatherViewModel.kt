@@ -6,12 +6,12 @@ import com.gwiazdowski.empikweather.ui.NavigationAwareViewModel
 import com.gwiazdowski.model.search.City
 import com.gwiazdowski.model.weather.Forecast
 import com.gwiazdowski.network.INetworkService
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.gwiazdowski.services.schedulers.IRxSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 
 class WeatherViewModel(
-    private val networkService: INetworkService
+    private val networkService: INetworkService,
+    private val schedulers: IRxSchedulers
 ) : NavigationAwareViewModel<WeatherArguments>() {
 
     private var forecastDisposable: Disposable? = null
@@ -23,8 +23,8 @@ class WeatherViewModel(
         loadingVisible.value = true
         cityDetails.postValue(args.city)
         forecastDisposable = networkService.getForecast(args.city.lat, args.city.lon)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(schedulers.io())
+            .observeOn(schedulers.main())
             .subscribe(
                 {
                     forecast.value = it

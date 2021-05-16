@@ -5,6 +5,6 @@ import org.koin.dsl.module
 
 val homeModule = module {
     scope<HomeFragment> {
-        viewModel { HomeViewModel(get(), get()) }
+        viewModel { HomeViewModel(get(), get(), get()) }
     }
 }
