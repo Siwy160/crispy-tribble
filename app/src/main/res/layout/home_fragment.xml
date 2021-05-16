@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_margin="16dp"
-            android:background="@drawable/home_search_background"
+            android:background="@drawable/rounded_corners_background"
             android:elevation="@{viewModel.currentSearchFocus == true ? @dimen/search_focused_elevation : @dimen/search_no_focus_elevation}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -93,22 +93,36 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/home_search_background"
+            android:background="@drawable/rounded_corners_background"
             android:elevation="@dimen/search_focused_elevation"
             android:visibility="gone"
+            app:elementSpacing="@{@dimen/home_search_suggestions_spacing}"
             app:fadeVisible="@{viewModel.searchSuggestions.size() != 0}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_field"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/bookmarks"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:elementSpacing="@{@dimen/home_bookmarks_spacing}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_field" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/black_alpha_50"
             android:clickable="true"
-            android:elevation="@dimen/search_focused_elevation"
             android:visibility="gone"
             app:fadeVisible="@{viewModel.loadingVisible}"
             app:layout_constraintBottom_toBottomOf="parent"

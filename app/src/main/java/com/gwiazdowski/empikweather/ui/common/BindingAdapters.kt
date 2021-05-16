@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.view.View
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 
 
 @BindingAdapter("fadeVisible")
@@ -35,4 +36,9 @@ fun View.setFadeVisible(visible: Boolean) {
             })
         }
     }
+}
+
+@BindingAdapter("elementSpacing")
+fun RecyclerView.elementSpacing(spacing: Float) {
+    addItemDecoration(RecyclerSpacingItemDecoration(spacing.toInt()))
 }

@@ -31,6 +31,11 @@ abstract class NavigationAwareFragment<A : IArguments, VM : NavigationAwareViewM
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        vm.onResume()
+    }
+
     override fun setArguments(args: IArguments) {
         if (isAdded) {
             vm.setArguments(args)

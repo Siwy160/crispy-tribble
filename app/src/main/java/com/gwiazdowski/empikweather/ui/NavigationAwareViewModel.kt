@@ -7,6 +7,8 @@ open class NavigationAwareViewModel<A : IArguments> : ViewModel() {
 
     open fun onArgumentsReceived(args: A) {}
 
+    open fun onResume() {}
+
     @Suppress("UNCHECKED_CAST")
     fun setArguments(args: IArguments) = onArgumentsReceived(args as A)
 }

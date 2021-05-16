@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="search_focused_elevation">8dp</dimen>
+    <dimen name="search_focused_elevation">4dp</dimen>
     <dimen name="search_no_focus_elevation">0dp</dimen>
+    <dimen name="home_search_suggestions_spacing">2dp</dimen>
+    <dimen name="home_bookmarks_spacing">8dp</dimen>
 </resources>

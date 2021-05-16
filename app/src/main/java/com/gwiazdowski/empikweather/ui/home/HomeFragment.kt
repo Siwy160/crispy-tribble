@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gwiazdowski.empikweather.databinding.HomeFragmentBinding
 import com.gwiazdowski.empikweather.ui.NavigationAwareFragment
 import com.gwiazdowski.empikweather.ui.common.hideKeyboard
+import com.gwiazdowski.empikweather.ui.home.bookmarks.BookmarksAdapter
 import com.gwiazdowski.empikweather.ui.home.search.SearchSuggestionsAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -19,10 +20,10 @@ class HomeFragment : NavigationAwareFragment<HomeArguments, HomeViewModel, HomeF
 
     override fun HomeFragmentBinding.setupBinding() {
         viewModel = vm
-        val adapter = SearchSuggestionsAdapter()
-        adapter.itemClicked = vm::searchSuggestionClicked
+        val searchSuggestions = SearchSuggestionsAdapter()
+        searchSuggestions.itemClicked = { vm.searchSuggestionClicked(it.city) }
         vm.searchSuggestions.observe(this@HomeFragment) {
-            adapter.showSuggestions(it)
+            searchSuggestions.showItems(it)
         }
         searchFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             vm.searchFocusChanged(hasFocus)
@@ -30,7 +31,16 @@ class HomeFragment : NavigationAwareFragment<HomeArguments, HomeViewModel, HomeF
                 v.hideKeyboard()
             }
         }
-        searchSuggestions.adapter = adapter
-        searchSuggestions.layoutManager = LinearLayoutManager(context)
+        this.searchSuggestions.adapter = searchSuggestions
+        this.searchSuggestions.layoutManager = LinearLayoutManager(context)
+
+        val bookmarks = BookmarksAdapter()
+        bookmarks.itemClicked = vm::bookmarksClicked
+        bookmarks.removeClicked = vm::removeBookmarkClicked
+        vm.bookmarks.observe(this@HomeFragment) {
+            bookmarks.showItems(it)
+        }
+        this.bookmarks.adapter = bookmarks
+        this.bookmarks.layoutManager = LinearLayoutManager(context)
     }
 }

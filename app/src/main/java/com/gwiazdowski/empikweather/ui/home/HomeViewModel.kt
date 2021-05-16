@@ -6,6 +6,7 @@ import com.gwiazdowski.empikweather.ui.NavigationAwareViewModel
 import com.gwiazdowski.empikweather.ui.common.LiveEvent
 import com.gwiazdowski.empikweather.ui.weather.WeatherArguments
 import com.gwiazdowski.empikweather.ui.weather.WeatherFragment
+import com.gwiazdowski.model.bookmark.Bookmark
 import com.gwiazdowski.model.search.SearchSuggestion
 import com.gwiazdowski.model.search.SearchSuggestionOrigin
 import com.gwiazdowski.network.INetworkService
@@ -26,6 +27,7 @@ class HomeViewModel(
     private val schedulers: IRxSchedulers
 ) : NavigationAwareViewModel<HomeArguments>() {
 
+    val bookmarks: MutableLiveData<List<Bookmark>> = MutableLiveData(emptyList())
     val searchSuggestions: MutableLiveData<List<SearchSuggestion>> = MutableLiveData(emptyList())
     val currentQuery: MutableLiveData<String> = MutableLiveData()
     val currentSearchFocus: MutableLiveData<Boolean> = MutableLiveData()
@@ -37,38 +39,63 @@ class HomeViewModel(
     private val querySubject = PublishSubject.create<String>()
 
     init {
-        disposables.add(
-            querySubject
-                .doOnNext {
-                    localStorage.getSavedSearches(it)
-                        .map { it.map { SearchSuggestion(it, SearchSuggestionOrigin.PREVIOUS_SEARCH) } }
-                        .subscribeOn(Schedulers.io())
-                        .subscribe({
-                            if (it != searchSuggestions.value) {
-                                searchSuggestions.postValue(it)
-                            }
-                        }, {
-                            Log.e(TAG, "Error while fetching local suggestions", it)
-                        })
-                }
-                .map { it.trim() }
-                .doOnNext {
-                    if (it.isBlank()) {
-                        searchSuggestions.postValue(emptyList())
-                    }
-                }
-                .filter(::validateQuery)
-                .debounce(250, TimeUnit.MILLISECONDS, schedulers.io())
-                .flatMap(::getSearchSuggestions)
-                .subscribeOn(schedulers.io())
-                .observeOn(schedulers.main())
+        disposables.add(handleSearch())
+    }
+
+    private fun fetchBookmarks() = localStorage
+        .getAllBookmarks()
+        .doOnSuccess {
+            bookmarks.postValue(
+                it.map { Bookmark(null, it) }
+            )
+        }
+        .flattenAsObservable { it }
+        .flatMap { city ->
+            networkService.getForecast(city.lat, city.lon)
+                .map { Bookmark(it, city) }
+                .toObservable()
+        }
+        .subscribeOn(schedulers.io())
+        .toList()
+        .subscribe({
+            bookmarks.postValue(it)
+        }, {
+            Log.e(TAG, "fetchBookmarks: error while fetching bookmarks", it)
+        })
+
+    private fun handleSearch() = querySubject
+        .doOnNext {
+            localStorage.getSavedSearches(it)
+                .map { it.map { SearchSuggestion(it, SearchSuggestionOrigin.PREVIOUS_SEARCH) } }
+                .subscribeOn(Schedulers.io())
                 .subscribe({
-                    searchSuggestions.value = it
+                    if (it != searchSuggestions.value) {
+                        searchSuggestions.postValue(it)
+                    }
                 }, {
-                    Log.e(TAG, "init: Error while fetching search suggestions", it)
-                    searchSuggestions.value = emptyList()
+                    Log.e(TAG, "Error while fetching local suggestions", it)
                 })
-        )
+        }
+        .map { it.trim() }
+        .doOnNext {
+            if (it.isBlank()) {
+                searchSuggestions.postValue(emptyList())
+            }
+        }
+        .filter(::validateQuery)
+        .debounce(250, TimeUnit.MILLISECONDS, schedulers.io())
+        .flatMap(::getSearchSuggestions)
+        .subscribeOn(schedulers.io())
+        .observeOn(schedulers.main())
+        .subscribe({
+            searchSuggestions.value = it
+        }, {
+            Log.e(TAG, "init: Error while fetching search suggestions", it)
+            searchSuggestions.value = emptyList()
+        })
+
+    override fun onResume() {
+        disposables.add(fetchBookmarks())
     }
 
     fun citySearchQueryChanged(newQuery: String) {
@@ -161,6 +188,29 @@ class HomeViewModel(
 
     override fun onCleared() {
         disposables.dispose()
+    }
+
+    fun bookmarksClicked(bookmark: Bookmark) {
+        navigationService.navigateTo(
+            NavigationTarget(
+                WeatherFragment::class,
+                WeatherArguments(bookmark.city)
+            )
+        )
+    }
+
+    fun removeBookmarkClicked(bookmark: Bookmark) {
+        disposables.add(
+            localStorage.removeBookmark(bookmark.city)
+                .subscribeOn(schedulers.io())
+                .subscribe({
+                    bookmarks.value?.toMutableList()?.let {
+                        bookmarks.postValue(it - bookmark)
+                    }
+                }, {
+                    Log.e(TAG, "removeBookmarkClicked: error while removing bookmark", it)
+                })
+        )
     }
 
     private companion object {
