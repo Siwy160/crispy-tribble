@@ -12,6 +12,8 @@
     <color name="grey">#E6E6E6</color>
     <color name="dark_grey">#B3B3B3</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="hot_temperature_color">#DD2C00</color>
+    <color name="cold_temperature_color">#2962FF</color>
 
     <color name="sunrise_top_color">#FF5b8fda</color>
     <color name="sunrise_bottom_color">#FFebdb84</color>

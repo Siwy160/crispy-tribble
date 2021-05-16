@@ -4,6 +4,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
 import androidx.databinding.BindingAdapter
 import com.github.mikephil.charting.charts.LineChart
@@ -14,6 +15,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.gwiazdowski.empikweather.R
 import com.gwiazdowski.empikweather.ui.common.getTemperatureString
+import com.gwiazdowski.empikweather.ui.common.kelvinToCelsius
 import com.gwiazdowski.empikweather.ui.weather.background.SkyColorProvider
 import com.gwiazdowski.model.weather.WeatherItem
 import com.squareup.picasso.Picasso
@@ -33,6 +35,13 @@ fun AppCompatImageView.loadIcon(weatherIcon: String?) {
 @BindingAdapter("temperature")
 fun AppCompatTextView.setTemperature(temperatureKelvin: Float?) {
     if (temperatureKelvin == null || temperatureKelvin == 0f) return
+    val temperatureCelsius = temperatureKelvin.kelvinToCelsius()
+    val fontColor = when {
+        temperatureCelsius > 20 -> ContextCompat.getColor(context, R.color.hot_temperature_color)
+        temperatureCelsius < 10 -> ContextCompat.getColor(context, R.color.cold_temperature_color)
+        else -> ContextCompat.getColor(context, R.color.black)
+    }
+    setTextColor(fontColor)
     text = temperatureKelvin.getTemperatureString()
 }
 
