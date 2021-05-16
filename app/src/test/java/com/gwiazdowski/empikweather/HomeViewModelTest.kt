@@ -7,7 +7,7 @@ import com.gwiazdowski.empikweather.ui.home.HomeViewModel
 import com.gwiazdowski.model.search.City
 import com.gwiazdowski.network.INetworkService
 import com.gwiazdowski.services.navigation.INavigationService
-import com.gwiazdowski.services.searchhistory.ISearchHistoryService
+import com.gwiazdowski.services.searchhistory.ILocalStorage
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -27,7 +27,7 @@ class HomeViewModelTest {
 
     private val networkService = mockk<INetworkService>(relaxed = true)
     private val navigationService = mockk<INavigationService>(relaxed = true)
-    private val searchHistoryService = mockk<ISearchHistoryService>(relaxed = true)
+    private val searchHistoryService = mockk<ILocalStorage>(relaxed = true)
     private val schedulers = TrampolineSchedulers()
 
     private lateinit var tested: HomeViewModel

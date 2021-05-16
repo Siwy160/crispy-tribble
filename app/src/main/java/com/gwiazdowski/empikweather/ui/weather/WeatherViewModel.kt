@@ -7,38 +7,71 @@ import com.gwiazdowski.model.search.City
 import com.gwiazdowski.model.weather.Forecast
 import com.gwiazdowski.network.INetworkService
 import com.gwiazdowski.services.schedulers.IRxSchedulers
-import io.reactivex.disposables.Disposable
+import com.gwiazdowski.services.searchhistory.ILocalStorage
+import io.reactivex.disposables.CompositeDisposable
 
 class WeatherViewModel(
     private val networkService: INetworkService,
+    private val localStorage: ILocalStorage,
     private val schedulers: IRxSchedulers
 ) : NavigationAwareViewModel<WeatherArguments>() {
 
-    private var forecastDisposable: Disposable? = null
+    private val disposables = CompositeDisposable()
     val forecast: MutableLiveData<Forecast> = MutableLiveData()
     val cityDetails: MutableLiveData<City> = MutableLiveData()
-    val loadingVisible: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoadingVisible: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isBookmark: MutableLiveData<Boolean> = MutableLiveData()
 
     override fun onArgumentsReceived(args: WeatherArguments) {
-        loadingVisible.value = true
+        isLoadingVisible.value = true
         cityDetails.postValue(args.city)
-        forecastDisposable = networkService.getForecast(args.city.lat, args.city.lon)
+        disposables.add(networkService.getForecast(args.city.lat, args.city.lon)
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.main())
             .subscribe(
                 {
                     forecast.value = it
-                    loadingVisible.value = false
+                    isLoadingVisible.value = false
                 }, {
                     Log.e(TAG, "onArgumentsReceived: error while fetching city data", it)
-                    loadingVisible.postValue(false)
+                    isLoadingVisible.postValue(false)
                 }
-            )
+            ))
+        disposables.add(
+            localStorage.isBookmark(args.city)
+                .subscribeOn(schedulers.io())
+                .observeOn(schedulers.main())
+                .subscribe({
+                    isBookmark.postValue(it)
+                }, {
+                    Log.e(TAG, "onArgumentsReceived: error while checking if city is bookmarked")
+                })
+        )
+    }
+
+    fun bookmarkButtonClicked() {
+        val city = cityDetails.value ?: return
+        disposables.add(localStorage.isBookmark(city)
+            .flatMapCompletable { isBookmark ->
+                if (isBookmark) {
+                    this.isBookmark.postValue(false)
+                    localStorage.removeBookmark(city)
+                } else {
+                    this.isBookmark.postValue(true)
+                    localStorage.addBookmark(city)
+                }
+            }
+            .subscribeOn(schedulers.io())
+            .subscribe({
+                Log.d(TAG, "bookmarkButtonClicked: bookmark state switched successfully")
+            }, {
+                Log.e(TAG, "bookmarkButtonClicked: error while switching bookmark state", it)
+            })
+        )
     }
 
     override fun onCleared() {
-        forecastDisposable?.dispose()
-        forecastDisposable = null
+        disposables.dispose()
     }
 
     private companion object {

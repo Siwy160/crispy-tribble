@@ -12,7 +12,7 @@ import com.gwiazdowski.network.INetworkService
 import com.gwiazdowski.services.navigation.INavigationService
 import com.gwiazdowski.services.navigation.NavigationTarget
 import com.gwiazdowski.services.schedulers.IRxSchedulers
-import com.gwiazdowski.services.searchhistory.ISearchHistoryService
+import com.gwiazdowski.services.searchhistory.ILocalStorage
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 class HomeViewModel(
     private val networkService: INetworkService,
     private val navigationService: INavigationService,
-    private val searchHistoryService: ISearchHistoryService,
+    private val localStorage: ILocalStorage,
     private val schedulers: IRxSchedulers
 ) : NavigationAwareViewModel<HomeArguments>() {
 
@@ -40,7 +40,7 @@ class HomeViewModel(
         disposables.add(
             querySubject
                 .doOnNext {
-                    searchHistoryService.getSavedSearches(it)
+                    localStorage.getSavedSearches(it)
                         .map { it.map { SearchSuggestion(it, SearchSuggestionOrigin.PREVIOUS_SEARCH) } }
                         .subscribeOn(Schedulers.io())
                         .subscribe({
@@ -107,7 +107,7 @@ class HomeViewModel(
             networkService.getCityByName(cityName)
                 .doOnSuccess {
                     if (it.isNotEmpty()) {
-                        searchHistoryService.saveSearch(cityName)
+                        localStorage.saveSearch(cityName)
                             .subscribeOn(Schedulers.io())
                             .subscribe({}, { Log.e(TAG, "Error while saving recent search", it) })
                     }
@@ -147,7 +147,7 @@ class HomeViewModel(
         return isValid
     }
 
-    private fun getSearchSuggestions(query: String) = searchHistoryService
+    private fun getSearchSuggestions(query: String) = localStorage
         .getSavedSearches(query)
         .onErrorReturn { emptyList() }
         .zipWith(

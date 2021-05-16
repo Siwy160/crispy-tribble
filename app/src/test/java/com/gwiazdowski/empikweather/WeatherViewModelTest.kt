@@ -65,7 +65,7 @@ class WeatherViewModelTest {
         every { observer.onChanged(capture(slot)) } answers {
             loadingStates.add(slot.captured)
         }
-        tested.loadingVisible.observeForever(observer)
+        tested.isLoadingVisible.observeForever(observer)
         every {
             networkService.getForecast(any(), any())
         } returns Single.just(Forecast(Date(0L), 0f, "", "", emptyList()))

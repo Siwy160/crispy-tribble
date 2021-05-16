@@ -5,8 +5,8 @@ import com.gwiazdowski.services.navigation.INavigationService
 import com.gwiazdowski.services.navigation.NavigationService
 import com.gwiazdowski.services.schedulers.IRxSchedulers
 import com.gwiazdowski.services.schedulers.RxSchedulers
-import com.gwiazdowski.services.searchhistory.ISearchHistoryService
-import com.gwiazdowski.services.searchhistory.SearchHistoryService
+import com.gwiazdowski.services.searchhistory.ILocalStorage
+import com.gwiazdowski.services.searchhistory.LocalStorageService
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
@@ -17,7 +17,7 @@ fun microservicesModule(@IdRes containerId: Int) = module {
     single<IRxSchedulers> {
         RxSchedulers()
     }
-    single<ISearchHistoryService> {
-        SearchHistoryService(androidApplication())
+    single<ILocalStorage> {
+        LocalStorageService(androidApplication())
     }
 }

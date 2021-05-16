@@ -1,4 +1,4 @@
-package com.gwiazdowski.services.searchhistory
+package com.gwiazdowski.services.searchhistory.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
