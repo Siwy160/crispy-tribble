@@ -75,6 +75,7 @@ fun LineChart.renderData(forecast: List<WeatherItem>?) {
         ""
     ).apply {
         val defaultColor = context.getColor(R.color.black)
+        val plotColor = context.getColor(R.color.dark_grey)
 
         description.isEnabled = false
         legend.isEnabled = false
@@ -107,11 +108,12 @@ fun LineChart.renderData(forecast: List<WeatherItem>?) {
         xAxis.textColor = defaultColor
         mode = LineDataSet.Mode.CUBIC_BEZIER
         setPinchZoom(false)
-        color = defaultColor
+        color = plotColor
+
         lineWidth = 3f
         circleRadius = 6f
-        setCircleColor(defaultColor)
-        circleHoleColor = defaultColor
+        setCircleColor(plotColor)
+        circleHoleColor = plotColor
     }
     data = LineData(dataSet)
     invalidate()

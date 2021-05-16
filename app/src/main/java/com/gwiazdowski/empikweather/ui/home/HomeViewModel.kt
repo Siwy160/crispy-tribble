@@ -12,7 +12,9 @@ import com.gwiazdowski.network.INetworkService
 import com.gwiazdowski.services.navigation.INavigationService
 import com.gwiazdowski.services.navigation.NavigationTarget
 import com.gwiazdowski.services.schedulers.IRxSchedulers
+import com.gwiazdowski.services.searchhistory.ISearchHistoryService
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
@@ -20,6 +22,7 @@ import java.util.concurrent.TimeUnit
 class HomeViewModel(
     private val networkService: INetworkService,
     private val navigationService: INavigationService,
+    private val searchHistoryService: ISearchHistoryService,
     private val schedulers: IRxSchedulers
 ) : NavigationAwareViewModel<HomeArguments>() {
 
@@ -36,24 +39,27 @@ class HomeViewModel(
     init {
         disposables.add(
             querySubject
+                .doOnNext {
+                    searchHistoryService.getSavedSearches(it)
+                        .map { it.map { SearchSuggestion(it, SearchSuggestionOrigin.PREVIOUS_SEARCH) } }
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            if (it != searchSuggestions.value) {
+                                searchSuggestions.postValue(it)
+                            }
+                        }, {
+                            Log.e(TAG, "Error while fetching local suggestions", it)
+                        })
+                }
                 .map { it.trim() }
                 .doOnNext {
                     if (it.isBlank()) {
                         searchSuggestions.postValue(emptyList())
                     }
                 }
-                .filter { validateQuery(it) }
+                .filter(::validateQuery)
                 .debounce(250, TimeUnit.MILLISECONDS, schedulers.io())
-                .flatMap {
-                    networkService
-                        .getCityNameAutocomplete(it)
-                        .doOnError { it.printStackTrace() }
-                        .onErrorReturn { emptyList() }
-                        .toObservable()
-                }
-                .map {
-                    it.map { SearchSuggestion(it, SearchSuggestionOrigin.NETWORK) }
-                }
+                .flatMap(::getSearchSuggestions)
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.main())
                 .subscribe({
@@ -75,6 +81,9 @@ class HomeViewModel(
 
     fun searchFocusChanged(hasFocus: Boolean) {
         currentSearchFocus.value = hasFocus
+        if (hasFocus) {
+            querySubject.onNext("")
+        }
     }
 
     fun backClicked() {
@@ -96,6 +105,13 @@ class HomeViewModel(
         loadingVisible.postValue(true)
         disposables.add(
             networkService.getCityByName(cityName)
+                .doOnSuccess {
+                    if (it.isNotEmpty()) {
+                        searchHistoryService.saveSearch(cityName)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({}, { Log.e(TAG, "Error while saving recent search", it) })
+                    }
+                }
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.main())
                 .subscribe(
@@ -125,11 +141,23 @@ class HomeViewModel(
 
     private fun validateQuery(query: String): Boolean {
         val isValid = query.isNotBlank() && searchQueryValidator.matches(query)
-        if (isValid.not()) {
+        if (query.isNotBlank() && isValid.not()) {
             searchErrorVisible.postValue(true)
         }
         return isValid
     }
+
+    private fun getSearchSuggestions(query: String) = searchHistoryService
+        .getSavedSearches(query)
+        .onErrorReturn { emptyList() }
+        .zipWith(
+            networkService.getCityNameAutocomplete(query)
+                .onErrorReturn { emptyList() }, { local, network ->
+                local.map { SearchSuggestion(it, SearchSuggestionOrigin.PREVIOUS_SEARCH) } +
+                        network.map { SearchSuggestion(it, SearchSuggestionOrigin.NETWORK) }
+            }
+        )
+        .toObservable()
 
     override fun onCleared() {
         disposables.dispose()
