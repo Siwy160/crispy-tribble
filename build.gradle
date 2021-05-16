@@ -15,11 +15,12 @@ buildscript {
 
     ext {
         versions = [
-                koin     : '3.0.1',
-                retrofit : '2.9.0',
-                rxjava   : '2.2.21',
-                rxandroid: '2.0.1',
-                picasso  : '2.8'
+                koin          : '3.0.1',
+                retrofit      : '2.9.0',
+                rxjava        : '2.2.21',
+                rxandroid     : '2.0.1',
+                picasso       : '2.8',
+                mpAndroidChart: '3.1.0'
         ]
     }
 }
@@ -28,6 +29,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 

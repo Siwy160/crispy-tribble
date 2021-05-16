@@ -12,9 +12,13 @@ internal fun ForecastResponseDto.toForecast() = Forecast(
     weatherIcon = current.weather.firstOrNull()?.icon ?: "",
     forecast = hourly.map {
         WeatherItem(
-            time = Date(it.dt),
+            time = it.dt.toDate(),
+            sunrise = daily.first().sunrise.toDate(), //Hourly weather does not contain sunrise and sunset
+            sunset = daily.first().sunset.toDate(),
             temperatureKelvin = it.temp,
             weatherIcon = it.weather.firstOrNull()?.icon ?: ""
         )
     }
 )
+
+private fun Long.toDate() = Date(this * 1000)

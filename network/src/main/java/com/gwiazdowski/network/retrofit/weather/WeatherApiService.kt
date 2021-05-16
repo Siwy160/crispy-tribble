@@ -21,7 +21,7 @@ internal interface WeatherApiService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
-        @Query("lang") languageCode: String
+        @Query("lang") languageCode: String,
     ): Single<ForecastResponseDto>
 
     @GET("geo/1.0/direct")

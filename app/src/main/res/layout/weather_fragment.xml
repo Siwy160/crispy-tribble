@@ -12,7 +12,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:renderBackgroundGradient="@{viewModel.forecast.forecast.get(0)}"
+        tools:background="@color/primaryLightColor">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/city_name"
@@ -21,6 +23,7 @@
             android:layout_marginStart="64dp"
             android:layout_marginTop="16dp"
             android:text="@{viewModel.cityDetails.name}"
+            android:textColor="@color/black"
             android:textSize="30sp"
             app:layout_constraintEnd_toStartOf="@id/button_favorite"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,6 +34,7 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:textSize="14sp"
             app:currentTime="@{viewModel.forecast.forecast.get(0).time}"
             app:layout_constraintEnd_toEndOf="@id/city_name"
@@ -67,6 +71,7 @@
             android:includeFontPadding="false"
             android:singleLine="true"
             android:text="@{viewModel.forecast.weatherName}"
+            android:textColor="@color/black"
             android:textSize="32sp"
             app:layout_constraintBottom_toTopOf="@id/current_temperature"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,12 +86,24 @@
             android:layout_marginStart="32dp"
             android:fontFamily="@font/roboto_light"
             android:includeFontPadding="false"
+            android:textColor="@color/black"
             android:textSize="128sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:temperature="@{viewModel.forecast.temperatureKelvin}"
             tools:text="25°" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:layout_width="0dp"
+            android:layout_height="192dp"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/current_temperature"
+            app:layout_constraintVertical_bias="1"
+            app:renderData="@{viewModel.forecast.forecast}" />
 
         <View
             android:layout_width="0dp"

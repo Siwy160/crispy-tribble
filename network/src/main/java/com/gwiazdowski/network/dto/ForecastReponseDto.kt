@@ -7,6 +7,7 @@ internal data class ForecastResponseDto(
     val timezone_offset: Int,
     val current: WeatherItem,
     val hourly: Array<WeatherItem>,
+    val daily: Array<DailyWeather>,
 )
 
 internal data class WeatherItem(
@@ -30,4 +31,9 @@ internal data class WeatherItem(
 internal data class Rain(
     val dt: Long,
     val precipitation: Float
+)
+
+internal data class DailyWeather(
+    val sunrise: Long,
+    val sunset: Long,
 )

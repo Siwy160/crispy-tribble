@@ -60,6 +60,7 @@ dependencies {
     implementation "io.insert-koin:koin-core:$versions.koin"
     implementation "io.insert-koin:koin-android:$versions.koin"
     implementation "com.squareup.picasso:picasso:$versions.picasso"
+    implementation "com.github.PhilJay:MPAndroidChart:$versions.mpAndroidChart"
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

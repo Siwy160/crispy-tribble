@@ -8,20 +8,12 @@ data class Forecast(
     val weatherName: String,
     val weatherIcon: String,
     val forecast: List<WeatherItem>,
-) {
-    companion object {
-        val EMPTY = Forecast(
-            time = Date(0L),
-            temperatureKelvin = 0f,
-            weatherIcon = "",
-            weatherName = "",
-            forecast = emptyList()
-        )
-    }
-}
+)
 
 data class WeatherItem(
     val time: Date,
+    val sunrise: Date,
+    val sunset: Date,
     val temperatureKelvin: Float,
     val weatherIcon: String,
 )

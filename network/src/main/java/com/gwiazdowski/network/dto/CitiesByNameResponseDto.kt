@@ -5,5 +5,5 @@ data class CitiesByNameResponseDto(
     val lat: Double,
     val lon: Double,
     val country: String,
-    val local_names: Map<String, String>
+    val local_names: Map<String, String>?
 )
