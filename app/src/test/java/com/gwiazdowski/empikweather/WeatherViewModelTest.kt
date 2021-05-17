@@ -68,7 +68,7 @@ class WeatherViewModelTest {
         tested.isLoadingVisible.observeForever(observer)
         every {
             networkService.getForecast(any(), any())
-        } returns Single.just(Forecast(Date(0L), 0f, "", "", emptyList()))
+        } returns Single.just(Forecast(Date(0L), 0f, "", "", emptyList(), current.humidity, current.wind_speed, current.feels_like))
 
         //when
         tested.onArgumentsReceived(arguments)

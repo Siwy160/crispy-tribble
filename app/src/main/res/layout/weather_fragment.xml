@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.gwiazdowski.empikweather.ui.weather.UnitType" />
+
         <variable
             name="viewModel"
             type="com.gwiazdowski.empikweather.ui.weather.WeatherViewModel" />
@@ -13,34 +15,19 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:renderBackgroundGradient="@{viewModel.forecast.forecast.get(0)}"
-        tools:background="@color/primaryLightColor">
+        android:background="@color/primaryLightColor">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/city_name"
+            android:id="@+id/topHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="64dp"
             android:layout_marginTop="16dp"
             android:text="@{viewModel.cityDetails.name}"
-            android:textColor="@color/black"
             android:textSize="30sp"
             app:layout_constraintEnd_toStartOf="@id/button_favorite"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Szczecin" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            app:currentTime="@{viewModel.forecast.forecast.get(0).time}"
-            app:layout_constraintEnd_toEndOf="@id/city_name"
-            app:layout_constraintStart_toStartOf="@id/city_name"
-            app:layout_constraintTop_toBottomOf="@id/city_name"
-            tools:text="Mon, 1:40 am" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/button_favorite"
@@ -51,60 +38,180 @@
             android:foreground="@drawable/ripple_circle"
             android:onClick="@{() -> viewModel.bookmarkButtonClicked()}"
             android:src="@{viewModel.isBookmark ? @drawable/ic_bookmark_added : @drawable/ic_bookmark_add}"
-            app:layout_constraintBottom_toBottomOf="@id/city_name"
+            app:layout_constraintBottom_toBottomOf="@id/topHeader"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/city_name" />
+            app:layout_constraintTop_toTopOf="@id/topHeader" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.2" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.8" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/condition_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:layout_constraintBottom_toBottomOf="@id/condition_name"
-            app:layout_constraintStart_toStartOf="@id/current_temperature"
-            app:layout_constraintTop_toTopOf="@id/condition_name"
-            app:weatherIcon="@{viewModel.forecast.weatherIcon}" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/condition_name"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:ellipsize="end"
-            android:includeFontPadding="false"
-            android:singleLine="true"
-            android:text="@{viewModel.forecast.weatherName}"
-            android:textColor="@color/black"
-            android:textSize="32sp"
+            android:layout_height="0dp"
+            android:layout_marginTop="32dp"
             app:layout_constraintBottom_toTopOf="@id/current_temperature"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@id/condition_icon"
-            tools:text="Clear" />
+            app:layout_constraintEnd_toEndOf="@id/guideline_right"
+            app:layout_constraintStart_toStartOf="@id/guideline_left"
+            app:layout_constraintTop_toBottomOf="@id/topHeader"
+            app:weatherIcon="@{viewModel.forecast.weatherIcon}" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/current_temperature"
             android:layout_width="wrap_content"
-            android:layout_height="128sp"
-            android:layout_marginStart="32dp"
-            android:fontFamily="@font/roboto_light"
+            android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:textSize="128sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="64sp"
+            app:layout_constraintBottom_toTopOf="@id/condition_name"
+            app:layout_constraintEnd_toEndOf="@id/guideline_right"
+            app:layout_constraintStart_toStartOf="@id/guideline_left"
+            app:layout_constraintTop_toBottomOf="@id/condition_icon"
             app:temperature="@{viewModel.forecast.temperatureKelvin}"
-            tools:text="25°" />
+            tools:text="25°c" />
 
-        <com.github.mikephil.charting.charts.LineChart
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/condition_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="@{viewModel.forecast.weatherName}"
+            android:textSize="26sp"
+            app:layout_constraintBottom_toBottomOf="@id/feels_like"
+            app:layout_constraintEnd_toEndOf="@id/guideline_right"
+            app:layout_constraintStart_toStartOf="@id/guideline_left"
+            app:layout_constraintTop_toBottomOf="@id/current_temperature"
+            tools:text="Clear" />
+
+        <com.gwiazdowski.empikweather.ui.weather.view.WeatherDetailView
+            android:id="@+id/wind_speed"
             android:layout_width="0dp"
-            android:layout_height="192dp"
-            android:layout_margin="16dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/weather_detail_section_left"
+            app:icon="@{@drawable/ic_wind}"
+            app:layout_constraintEnd_toStartOf="@id/feels_like"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/feels_like"
+            app:title="@{@string/wind_speed}"
+            app:unitType="@{UnitType.SPEED}"
+            app:value="@{viewModel.forecast.windSpeed}" />
+
+        <com.gwiazdowski.empikweather.ui.weather.view.WeatherDetailView
+            android:id="@+id/feels_like"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="2dp"
+            android:background="@color/white"
+            app:icon="@{@drawable/ic_feels_like}"
+            app:layout_constraintEnd_toStartOf="@id/humidity"
+            app:layout_constraintStart_toEndOf="@id/wind_speed"
+            app:layout_constraintTop_toBottomOf="@id/condition_name"
+            app:title="@{@string/feels_like}"
+            app:unitType="@{UnitType.CELSIUS}"
+            app:value="@{viewModel.forecast.feelsLike}" />
+
+        <com.gwiazdowski.empikweather.ui.weather.view.WeatherDetailView
+            android:id="@+id/humidity"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/weather_detail_section_right"
+            app:icon="@{@drawable/ic_humidity}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/feels_like"
+            app:layout_constraintTop_toTopOf="@id/feels_like"
+            app:title="@{@string/humidity}"
+            app:unitType="@{UnitType.PERCENT}"
+            app:value="@{viewModel.forecast.humidity}" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:constraint_referenced_ids="weather_in_1_hour, weather_in_2_hours, weather_in_3_hours, weather_in_4_hours, weather_in_5_hours, weather_in_6_hours"
+            app:flow_horizontalGap="2dp"
+            app:flow_wrapMode="aligned"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/current_temperature"
-            app:layout_constraintVertical_bias="1"
-            app:renderData="@{viewModel.forecast.forecast}" />
+            app:layout_constraintTop_toBottomOf="@id/feels_like"
+            app:layout_constraintVertical_bias="0" />
+
+        <com.gwiazdowski.empikweather.ui.weather.view.ForecastItemView
+            android:id="@+id/weather_in_1_hour"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/weather_detail_section_left"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/feels_like"
+            app:render="@{viewModel.forecast.hourlyForecast.get(1)}" />
+
+        <com.gwiazdowski.empikweather.ui.weather.view.ForecastItemView
+            android:id="@+id/weather_in_2_hours"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/feels_like"
+            app:render="@{viewModel.forecast.hourlyForecast.get(2)}" />
+
+        <com.gwiazdowski.empikweather.ui.weather.view.ForecastItemView
+            android:id="@+id/weather_in_3_hours"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/feels_like"
+            app:render="@{viewModel.forecast.hourlyForecast.get(3)}" />
+
+        <com.gwiazdowski.empikweather.ui.weather.view.ForecastItemView
+            android:id="@+id/weather_in_4_hours"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/feels_like"
+            app:render="@{viewModel.forecast.hourlyForecast.get(4)}" />
+
+        <com.gwiazdowski.empikweather.ui.weather.view.ForecastItemView
+            android:id="@+id/weather_in_5_hours"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/feels_like"
+            app:render="@{viewModel.forecast.hourlyForecast.get(5)}" />
+
+        <com.gwiazdowski.empikweather.ui.weather.view.ForecastItemView
+            android:id="@+id/weather_in_6_hours"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/weather_detail_section_right"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/feels_like"
+            app:render="@{viewModel.forecast.hourlyForecast.get(6)}" />
 
         <View
             android:layout_width="0dp"

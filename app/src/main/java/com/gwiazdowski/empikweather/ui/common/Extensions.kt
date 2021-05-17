@@ -7,7 +7,7 @@ import kotlin.math.roundToInt
 
 fun Float.kelvinToCelsius() = this - 273.15f
 
-fun Float.getTemperatureString() = "${(this.kelvinToCelsius()).roundToInt()}°"
+fun Float.getTemperatureString() = "${(this.kelvinToCelsius()).roundToInt()}°c"
 
 fun Context.dpToPx(dp: Float): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)

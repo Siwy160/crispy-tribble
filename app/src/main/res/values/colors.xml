@@ -9,21 +9,7 @@
     <color name="grey">#E6E6E6</color>
     <color name="dark_grey">#606060</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="hot_temperature_color">#DD2C00</color>
-    <color name="cold_temperature_color">#2962FF</color>
+    <color name="hot_temperature_color">#fe7e80</color>
+    <color name="cold_temperature_color">#7ac0ff</color>
 
-    <color name="sunrise_top_color">#FF5b8fda</color>
-    <color name="sunrise_bottom_color">#FFebdb84</color>
-    <color name="morning_top_color">#FF61a4f2</color>
-    <color name="morning_bottom_color">#FF94ccfc</color>
-    <color name="afternoon_top_color">#FF3d84d6</color>
-    <color name="afternoon_bottom_color">#FF7fbdec</color>
-    <color name="sunset_top_color">#FF7d557a</color>
-    <color name="sunset_bottom_color">#FFe7a13c</color>
-    <color name="dusk_top_color">#FF374086</color>
-    <color name="dusk_bottom_color">#FFde8844</color>
-    <color name="night_top_color">#FF0b1223</color>
-    <color name="night_bottom_color">#FF284a76</color>
-    <color name="dawn_top_color">#FF594c82</color>
-    <color name="dawn_bottom_color">#FFc98f82</color>
 </resources>

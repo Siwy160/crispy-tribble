@@ -10,13 +10,17 @@ internal fun ForecastResponseDto.toForecast() = Forecast(
     temperatureKelvin = current.temp,
     weatherName = current.weather.firstOrNull()?.main ?: "",
     weatherIcon = current.weather.firstOrNull()?.icon ?: "",
-    forecast = hourly.map {
+    humidity = current.humidity,
+    windSpeed = current.wind_speed,
+    feelsLike = current.feels_like,
+    hourlyForecast = hourly.map {
         WeatherItem(
             time = it.dt.toDate(),
             sunrise = daily.first().sunrise.toDate(), //Hourly weather does not contain sunrise and sunset
             sunset = daily.first().sunset.toDate(),
             temperatureKelvin = it.temp,
-            weatherIcon = it.weather.firstOrNull()?.icon ?: ""
+            weatherIcon = it.weather.firstOrNull()?.icon ?: "",
+            weatherName = it.weather.firstOrNull()?.main ?: ""
         )
     }
 )

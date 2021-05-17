@@ -45,9 +45,11 @@ class HomeViewModel(
     private fun fetchBookmarks() = localStorage
         .getAllBookmarks()
         .doOnSuccess {
-            bookmarks.postValue(
-                it.map { Bookmark(null, it) }
-            )
+            if (bookmarks.value?.isNotEmpty() == false) {
+                bookmarks.postValue(
+                    it.map { Bookmark(null, it) }
+                )
+            }
         }
         .flattenAsObservable { it }
         .flatMap { city ->
