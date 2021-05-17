@@ -66,6 +66,7 @@ class HomeViewModel(
         })
 
     private fun handleSearch() = querySubject
+        .filter { currentSearchFocus.value == true+ }
         .doOnNext {
             localStorage.getSavedSearches(it)
                 .map { it.map { SearchSuggestion(it, SearchSuggestionOrigin.PREVIOUS_SEARCH) } }
@@ -78,11 +79,11 @@ class HomeViewModel(
                     Log.e(TAG, "Error while fetching local suggestions", it)
                 })
         }
-        .map { it.trim() }
-        .doOnNext {
-            if (it.isBlank()) {
+        .map {
+            if (it.isBlank() && currentQuery.value?.isNotBlank() == true) {
                 searchSuggestions.postValue(emptyList())
             }
+            it.trim()
         }
         .filter(::validateQuery)
         .debounce(250, TimeUnit.MILLISECONDS, schedulers.io())
@@ -110,14 +111,17 @@ class HomeViewModel(
 
     fun searchFocusChanged(hasFocus: Boolean) {
         currentSearchFocus.value = hasFocus
-        if (hasFocus) {
-            querySubject.onNext("")
+        querySubject.onNext("")
+        if (hasFocus.not()) {
+            searchSuggestions.postValue(emptyList())
         }
     }
 
     fun backClicked() {
         querySubject.onNext("")
         searchClearFocusRequests.postValue(false)
+        currentSearchFocus.postValue(false)
+        searchSuggestions.postValue(emptyList())
     }
 
     fun searchSuggestionClicked(cityName: String) {
@@ -149,8 +153,8 @@ class HomeViewModel(
                         if (it.isEmpty()) {
                             searchErrorVisible.postValue(true)
                         } else {
-                            // TODO taking first city probably isn't best idea.
                             searchSuggestions.postValue(emptyList())
+                            // TODO taking first city probably isn't best idea.
                             navigationService.navigateTo(
                                 NavigationTarget(
                                     WeatherFragment::class,
@@ -193,6 +197,7 @@ class HomeViewModel(
     }
 
     fun bookmarksClicked(bookmark: Bookmark) {
+        searchSuggestions.postValue(emptyList())
         navigationService.navigateTo(
             NavigationTarget(
                 WeatherFragment::class,
