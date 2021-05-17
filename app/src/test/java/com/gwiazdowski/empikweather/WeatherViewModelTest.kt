@@ -9,6 +9,7 @@ import com.gwiazdowski.empikweather.ui.weather.WeatherViewModel
 import com.gwiazdowski.model.search.City
 import com.gwiazdowski.model.weather.Forecast
 import com.gwiazdowski.network.INetworkService
+import com.gwiazdowski.services.searchhistory.ILocalStorage
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -29,6 +30,7 @@ class WeatherViewModelTest {
     val rule: TestRule = InstantTaskExecutorRule()
 
     private val networkService = mockk<INetworkService>(relaxed = true)
+    private val localStorage = mockk<ILocalStorage>(relaxed = true)
     private val schedulers = TrampolineSchedulers()
 
     private lateinit var tested: WeatherViewModel
@@ -37,6 +39,7 @@ class WeatherViewModelTest {
     fun setup() {
         tested = WeatherViewModel(
             networkService,
+            localStorage,
             schedulers
         )
     }
@@ -68,7 +71,7 @@ class WeatherViewModelTest {
         tested.isLoadingVisible.observeForever(observer)
         every {
             networkService.getForecast(any(), any())
-        } returns Single.just(Forecast(Date(0L), 0f, "", "", emptyList(), current.humidity, current.wind_speed, current.feels_like))
+        } returns Single.just(Forecast(Date(0L), 0f, "", "", emptyList(), 0, 0f, 0f))
 
         //when
         tested.onArgumentsReceived(arguments)
