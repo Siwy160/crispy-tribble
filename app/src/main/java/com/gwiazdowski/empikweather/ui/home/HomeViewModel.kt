@@ -66,7 +66,7 @@ class HomeViewModel(
         })
 
     private fun handleSearch() = querySubject
-        .filter { currentSearchFocus.value == true+ }
+        .filter { currentSearchFocus.value == true }
         .doOnNext {
             localStorage.getSavedSearches(it)
                 .map { it.map { SearchSuggestion(it, SearchSuggestionOrigin.PREVIOUS_SEARCH) } }
